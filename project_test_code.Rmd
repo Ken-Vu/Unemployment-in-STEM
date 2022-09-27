@@ -1,0 +1,37 @@
+---
+title: "Project_test-code"
+author: "Ken Vu"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+Code to screw around with the data set.
+```{r}
+library(pacman)
+p_load(dplyr, ggplot2, readr)
+```
+
+# Loading in Data Set
+Getting in women in stem data
+```{r}
+women_stem <- read_csv("women-stem.csv")
+women_stem
+```
+
+Getting in `recent_grad` data set
+```{r}
+recent_grads <- read_csv("recent-grads.csv")
+recent_grads
+```
+
+
+## Merging the two data sets by major
+```{r}
+full_data <- women_stem %>%
+  inner_join(recent_grads %>% 
+               select(Major, Employed, Unemployed, 
+                      Unemployment_rate), by="Major")
+full_data
+```
+
+
