@@ -8,7 +8,7 @@
 
 # Dataset Used
 
-To address this problem, we used data sets behind the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/) which can be found in the following GitHub repo: https://github.com/fivethirtyeight/data/blob/master/college-majors/women-stem.csv
+To address this problem, we used data sets behind the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/) which can be found in the following GitHub repo: https://github.com/fivethirtyeight/data/blob/master/college-majors
 
 All data is from American Community Survey 2010-2012 Public Use Microdata Series.
 
