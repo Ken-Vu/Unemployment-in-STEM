@@ -1,0 +1,53 @@
+---
+title: "Unemployment in STEM"
+subtitle: "STAT 650 Advanced R Final Project"
+author: 
+  - name: "Lydia Gibson"
+  - name: "Ken Vu"
+editor: source
+format:
+  pdf:
+    documentclass: scrartcl
+    classoption: ["oneside", "open=any"]
+    number-sections: true
+    template-partials:
+      - "before-body.tex"
+      - "_titlepage.tex" 
+    include-in-header: 
+      - "in-header.tex"
+    toc: true
+---
+
+\newpage
+  
+## Introduction
+
+## Data Description
+
+
+\setlength\parindent{24pt}        
+
+The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **76 rows** by **blank columns**. The variables are: `Rank`, `Major_code`, `Major`, `Major_category`, `Total`, `Men`, `Women`, `ShareWomen`, `Employed`, `Unemployed`, `Unemployment_rate`, and `Median`. Below are descriptions of each variable.
+
+- `Median`: Median earnings of full-time, year-round workers
+- `Rank`: Rank by median earnings
+- `Major_code`: Major code, FO1DP in ACS PUMS
+- `Major`: Major description
+- `Major_category`: Category of major from Carnevale et al
+- `Total`: Total number of people with major
+- `Men`: Male graduates
+- `Women`: Female graduates
+- `ShareWomen`: Women as share of Total
+- `Employed`: Number employed (ESR == 1 or 2)
+- `Unemployed`: Number unemployed (ESR == 3)
+- `Unemployment_rate`: Unemployed / (Unemployed + Employed)
+
+
+
+## Results
+
+## Bibliography
+
+## Code Appendix
+
+For supplementary R script, visit <https://github.com/lgibson7/Unemployment-in-STEM>
