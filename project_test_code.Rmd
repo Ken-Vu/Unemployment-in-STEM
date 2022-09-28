@@ -11,7 +11,7 @@ library(pacman)
 p_load(dplyr, ggplot2, readr)
 ```
 
-# Loading in Data Set
+# Loading in Data Set (Skip if Done)
 Getting in women in stem data
 ```{r}
 women_stem <- read_csv("women-stem.csv")
@@ -34,4 +34,18 @@ full_data <- women_stem %>%
 full_data
 ```
 
+```{r}
+View(full_data)
+```
+
+# EDA
+```{r}
+dat_stats <- full_data %>%
+  group_by(Major_category) %>%
+  summarise(TotalEmployed=sum(Employed),
+            TotalUnemployed=sum(Unemployed),
+            Prop_Employed=TotalEmployed/(TotalEmployed + TotalUnemployed),
+            Prop_Unemployed=TotalUnemployed/(TotalEmployed + TotalUnemployed))
+dat_stats
+```
 
