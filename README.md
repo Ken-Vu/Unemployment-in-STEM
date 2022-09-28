@@ -2,9 +2,10 @@
 
 
 
-# Research Goals
+# Tools Used
 
-
+* Libraries: `dplyr`, `ggplot2`, `readr`, `forcats`
+* Functions: `read_csv`, `inner_join`, `select`, `summarize`, `group_by`, `pivot_longer`, `mutate`, `ggplot`
 
 # Dataset Used
 
@@ -29,8 +30,3 @@ Header | Description
 `Unemployed` | Number unemployed (ESR == 3)
 `Unemployment_rate` | Unemployed / (Unemployed + Employed)
 `Median` | Median earnings of full-time, year-round workers
-
-
-# Tools Used
-
-* Packages: dplyr, ggplot2
