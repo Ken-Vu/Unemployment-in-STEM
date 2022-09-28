@@ -34,10 +34,6 @@ full_data <- women_stem %>%
 full_data
 ```
 
-```{r}
-View(full_data)
-```
-
 # EDA
 ```{r}
 dat_stats <- full_data %>%
@@ -47,5 +43,21 @@ dat_stats <- full_data %>%
             Prop_Employed=TotalEmployed/(TotalEmployed + TotalUnemployed),
             Prop_Unemployed=TotalUnemployed/(TotalEmployed + TotalUnemployed))
 dat_stats
+```
+
+The data for unemployment rate by major category
+```{r}
+dat_stats1 <- full_data %>%
+  group_by(Major_category) %>% 
+  summarise(UnemploymentRate=sum(Unemployed)/sum(Employed))
+dat_stats1
+```
+
+Plot for unemployment rate by category
+```{r}
+dat_stats1 %>%
+  ggplot(aes(x=Major_category,y=UnemploymentRate, 
+             fill=Major_category)) + 
+  stat_summary(geom="bar")
 ```
 
