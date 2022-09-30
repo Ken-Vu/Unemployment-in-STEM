@@ -1,0 +1,169 @@
+---
+title: "Unemployment in STEM"
+subtitle: "STAT 650 Advanced R Final Project"
+author: 
+  - name: "Lydia Gibson"
+  - name: "Ken Vu"
+editor: source
+format:
+  pdf:
+    echo: false
+    documentclass: scrartcl
+    classoption: ["oneside", "open=any"]
+    number-sections: true
+    template-partials:
+      - "before-body.tex"
+      - "_titlepage.tex" 
+    include-in-header: 
+      - "in-header.tex"
+    toc: true
+---
+
+\newpage
+  
+## Introduction
+
+
+
+## Data Description
+
+
+\setlength\parindent{24pt}        
+
+The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **76 rows** by **blank columns**. The variables are: `Rank`, `Major_code`, `Major`, `Major_category`, `Total`, `Men`, `Women`, `ShareWomen`, `Employed`, `Unemployed`, `Unemployment_rate`, and `Median`. Below are descriptions of each variable.
+
+- `Median`: Median earnings of full-time, year-round workers
+- `Rank`: Rank by median earnings
+- `Major_code`: Major code, FO1DP in ACS PUMS
+- `Major`: Major description
+- `Major_category`: Category of major from Carnevale et al
+- `Total`: Total number of people with major
+- `Men`: Male graduates
+- `Women`: Female graduates
+- `ShareWomen`: Women as share of Total
+- `Employed`: Number employed (ESR == 1 or 2)
+- `Unemployed`: Number unemployed (ESR == 3)
+- `Unemployment_rate`: Unemployed / (Unemployed + Employed)
+
+
+
+## Results
+
+```{r}
+library(tidyverse)
+```
+
+
+
+Loading in Data Set (Skip if Done)
+Getting in women in stem data
+```{r}
+women_stem <- read_csv("women-stem.csv")
+women_stem
+```
+
+Getting in `recent_grad` data set
+```{r}
+recent_grads <- read_csv("recent-grads.csv")
+recent_grads
+```
+
+
+Merging the two data sets by major
+```{r}
+full_data <- women_stem %>%
+  inner_join(recent_grads %>% 
+               select(Major, Employed, Unemployed, 
+                      Unemployment_rate), by="Major")
+
+```
+
+EDA
+```{r}
+dat_stats <- full_data %>%
+  group_by(Major_category) %>%
+  summarise(TotalEmployed=sum(Employed),
+            TotalUnemployed=sum(Unemployed),
+            Prop_Employed=TotalEmployed/(TotalEmployed + TotalUnemployed),
+            Prop_Unemployed=TotalUnemployed/(TotalEmployed + TotalUnemployed))
+
+```
+
+The data for unemployment rate by major category
+```{r}
+dat_stats1 <- full_data %>%
+  group_by(Major_category) %>% 
+  summarise(UnemploymentRate=sum(Unemployed)/sum(Employed))
+
+```
+
+
+```{r}
+dat_stats1 <- dat_stats1 %>%
+  mutate(Major_category = Major_category %>% as.factor() %>%
+           fct_reorder(UnemploymentRate))
+dat_stats1
+```
+
+Testing Out Lydia's Suggestions
+FIrst, get a data frame with summary statistics for all major categories
+```{r}
+dat_stats_all <- recent_grads %>%
+  group_by(Major_category) %>%
+  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed),
+            AvgMedianSalary = mean(Median)) %>%
+  mutate(Major_category = Major_category %>% as.factor() %>%
+           fct_reorder(UnemploymentRate),
+         STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
+                             "No","Yes") %>% as.factor() %>%
+           fct_relevel("Yes"))
+dat_stats_all
+```
+
+
+```{r}
+dat_stats_all %>%
+  ggplot(aes(y=Major_category, 
+             x=UnemploymentRate, fill=STEM_Major)) +
+  geom_col() + 
+  # manually change fill colors
+  scale_fill_manual(values=c("#0066CC","#bebebe")) +
+  # add red line representing average unemployment rate 
+  geom_vline(xintercept=mean(recent_grads$Unemployment_rate),
+             color="red", size=2) + 
+  labs(x="Unemployment Rate", y="Major Category",
+       title="Unemployment Rate by Major Category",
+       fill="STEM") + 
+  # change title size
+  theme(plot.title=element_text(hjust=0.5,size=20)) + 
+  # annotate vertical line
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.013,
+           y=5, label="average", color="red") + 
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.017,
+           y=4.25, label="unemployment", color="red")
+```
+
+Want a table 
+so for each major category, the unemployment rate and the average median salary
+```{r}
+df1 <- dat_stats_all %>% 
+  arrange(desc(AvgMedianSalary)) %>%
+  select(c("Major_category","AvgMedianSalary","UnemploymentRate"))
+names(df1) <- c("Major Category", "Average Median Salary",
+                "Unemployment Rate")
+df1 
+```
+
+
+
+## Bibliography
+
+Casselman, Ben. “The Economic Guide to Picking a College Major.” FiveThirtyEight, FiveThirtyEight, 12 Sept. 2014, https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/. 
+
+Terrel, N. (2007). Stem occupations: High-tech jobs for a high-tech economy. Occupational Outlook Quarterly. Retrieved September 30, 2022, from https://www.bls.gov/careeroutlook/2007/spring/art04.pdf 
+
+Vilorio, D. (2014). Stem 101: Intro to Tomorrow's Jobs - Bureau of Labor Statistics. Occupational Outlook Quarterly. Retrieved September 30, 2022, from https://www.bls.gov/careeroutlook/2014/spring/art01.pdf 
+
+## Code Appendix
+
+For supplementary R script, visit <https://github.com/lgibson7/Unemployment-in-STEM>
