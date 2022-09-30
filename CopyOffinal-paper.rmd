@@ -30,7 +30,7 @@ format:
 
 \setlength\parindent{24pt}        
 
-The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **76 rows** by **blank columns**. The variables are: `Rank`, `Major_code`, `Major`, `Major_category`, `Total`, `Men`, `Women`, `ShareWomen`, `Employed`, `Unemployed`, `Unemployment_rate`, and `Median`. Below are descriptions of each variable.
+The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **76 rows** by **12 columns**. The variables are: `Rank`, `Major_code`, `Major`, `Major_category`, `Total`, `Men`, `Women`, `ShareWomen`, `Employed`, `Unemployed`, `Unemployment_rate`, and `Median`. Below are descriptions of each variable.
 
 - `Median`: Median earnings of full-time, year-round workers
 - `Rank`: Rank by median earnings
@@ -73,8 +73,7 @@ Merging the two data sets by major
 ```{r}
 full_data <- women_stem %>%
   inner_join(recent_grads %>% 
-               select(Major, Employed, Unemployed, 
-                      Unemployment_rate), by="Major")
+               select(Major, contains("employ")), by="Major")
 
 ```
 
@@ -135,12 +134,12 @@ dat_stats_all %>%
        title="Unemployment Rate by Major Category",
        fill="STEM") + 
   # change title size
-  theme(plot.title=element_text(hjust=0.5,size=20)) + 
+  theme(plot.title=element_text(hjust=0.5,size=16)) + 
   # annotate vertical line
-  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.013,
-           y=5, label="average", color="red") + 
-  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.017,
-           y=4.25, label="unemployment", color="red")
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.019,
+           y=5, label="average", color="red", size=2.5) + 
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.023,
+           y=4.5, label="unemployment", color="red", size=2.5)
 ```
 
 Want a table 
