@@ -8,7 +8,7 @@ output: pdf_document
 Code to screw around with the data set.
 ```{r}
 library(pacman)
-p_load(dplyr, ggplot2, readr)
+p_load(dplyr, ggplot2, readr, forcats, knitr, kableExtra)
 ```
 
 # Loading in Data Set (Skip if Done)
@@ -56,8 +56,67 @@ dat_stats1
 Plot for unemployment rate by category
 ```{r}
 dat_stats1 %>%
+  mutate(Major_category = Major_category %>% as.factor() %>% fct_reorder(UnemploymentRate)) %>%
   ggplot(aes(x=Major_category,y=UnemploymentRate, 
              fill=Major_category)) + 
-  stat_summary(geom="bar")
+  geom_col()
+```
+
+```{r}
+dat_stats1 <- dat_stats1 %>%
+  mutate(Major_category = Major_category %>% as.factor() %>%
+           fct_reorder(UnemploymentRate))
+dat_stats1
+```
+
+# Testing Out Lydia's Suggestions
+FIrst, get a data frame with summary statistics for all major categories
+```{r}
+dat_stats_all <- recent_grads %>%
+  group_by(Major_category) %>%
+  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed),
+            AvgMedianSalary = mean(Median)) %>%
+  mutate(Major_category = Major_category %>% as.factor() %>%
+           fct_reorder(UnemploymentRate),
+         STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
+                             "No","Yes") %>% as.factor() %>%
+           fct_relevel("Yes"))
+dat_stats_all
+```
+
+
+```{r}
+dat_stats_all %>%
+  ggplot(aes(y=Major_category, 
+             x=UnemploymentRate, fill=STEM_Major)) +
+  geom_col() + 
+  # manually change fill colors
+  scale_fill_manual(values=c("#0066CC","#bebebe")) +
+  # add red line representing average unemployment rate 
+  geom_vline(xintercept=mean(recent_grads$Unemployment_rate),
+             color="red", size=2) + 
+  labs(x="Unemployment Rate", y="Major Category",
+       title="Unemployment Rate by Major Category",
+       fill="STEM") + 
+  # change title size
+  theme(plot.title=element_text(hjust=0.5,size=20)) + 
+  # annotate vertical line
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.013,
+           y=5, label="average", color="red") + 
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.017,
+           y=4.25, label="unemployment", color="red")
+```
+
+Want a table 
+so for each major category, the unemployment rate and the average median salary
+```{r}
+df1 <- dat_stats_all %>% 
+  arrange(desc(AvgMedianSalary)) %>%
+  select(c("Major_category","AvgMedianSalary","UnemploymentRate"))
+names(df1) <- c("Major Category", "Average Median Salary",
+                "Unemployment Rate")
+df1 %>% 
+  kable(format="markdown") %>%
+  kable_styling()
 ```
 
