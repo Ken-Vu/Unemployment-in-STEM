@@ -29,8 +29,7 @@ recent_grads
 ```{r}
 full_data <- women_stem %>%
   inner_join(recent_grads %>% 
-               select(Major, Employed, Unemployed, 
-                      Unemployment_rate), by="Major")
+               select(Major, contains("employ")), by="Major")
 full_data
 ```
 
@@ -59,7 +58,12 @@ dat_stats1 %>%
   mutate(Major_category = Major_category %>% as.factor() %>% fct_reorder(UnemploymentRate)) %>%
   ggplot(aes(x=Major_category,y=UnemploymentRate, 
              fill=Major_category)) + 
-  geom_col()
+  geom_col() + 
+  labs(x="Major Category", y="Unemployment Rate",
+       title="Unemployment Rate by Major Category") +
+  theme(axis.text.x = element_text(angle=8),
+        legend.position="None",
+        plot.title=element_text(hjust=0.5,size=20))
 ```
 
 ```{r}
@@ -84,6 +88,12 @@ dat_stats_all <- recent_grads %>%
 dat_stats_all
 ```
 
+Getting mean unemployment rate
+```{r}
+avg_unemployment_rate = mean(recent_grads$Unemployment_rate)
+avg_unemployment_rate
+```
+
 
 ```{r}
 dat_stats_all %>%
@@ -93,7 +103,7 @@ dat_stats_all %>%
   # manually change fill colors
   scale_fill_manual(values=c("#0066CC","#bebebe")) +
   # add red line representing average unemployment rate 
-  geom_vline(xintercept=mean(recent_grads$Unemployment_rate),
+  geom_vline(xintercept=avg_unemployment_rate,
              color="red", size=2) + 
   labs(x="Unemployment Rate", y="Major Category",
        title="Unemployment Rate by Major Category",
@@ -101,11 +111,13 @@ dat_stats_all %>%
   # change title size
   theme(plot.title=element_text(hjust=0.5,size=20)) + 
   # annotate vertical line
-  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.013,
+  annotate("text",x=avg_unemployment_rate + 0.014,
            y=5, label="average", color="red") + 
-  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.017,
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.02,
            y=4.25, label="unemployment", color="red")
 ```
+
+As we can see in this bar chart above, we find that of all the STEM major categories, Computer Science & Mathematics has the highest unemployment rate (which is around 0.0772), which is also greater than the average unemployment rate across all major categories (which is around 0.0682).
 
 Want a table 
 so for each major category, the unemployment rate and the average median salary
