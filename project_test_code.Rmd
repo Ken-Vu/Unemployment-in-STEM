@@ -116,7 +116,6 @@ df1 <- dat_stats_all %>%
 names(df1) <- c("Major Category", "Average Median Salary",
                 "Unemployment Rate")
 df1 %>% 
-  kable(format="markdown") %>%
-  kable_styling()
+  kable(format="markdown")
 ```
 
