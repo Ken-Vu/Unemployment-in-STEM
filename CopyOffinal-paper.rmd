@@ -121,6 +121,7 @@ dat_stats_all
 
 
 ```{r fig.height = 8, fig.width = 10}
+avg_unemploy_rate = mean(recent_grads$Unemployment_rate)
 dat_stats_all %>%
   ggplot(aes(y=Major_category, 
              x=UnemploymentRate, fill=STEM_Major)) +
@@ -133,7 +134,7 @@ dat_stats_all %>%
   # manually change fill colors
   scale_fill_manual(values=c("#0066CC","#bebebe")) +
   # add red line representing average unemployment rate 
-  geom_vline(xintercept=mean(recent_grads$Unemployment_rate),
+  geom_vline(xintercept=avg_unemploy_rate,
              color="red", linetype=2) + 
   labs(x="Unemployment Rate", y="Major Category",
        title="Unemployment Rate by Major Category",
@@ -141,8 +142,8 @@ dat_stats_all %>%
   # change title size
   theme(plot.title=element_text(hjust=0.5,size=16)) + 
   # annotate vertical line
-  annotate("text",x=mean(recent_grads$Unemployment_rate), #+ 0.023,
-           y=4.5, label="avg unemployment", color="red", size=2.5)
+  annotate("text",x=avg_unemploy_rate, 
+           y=4.5, label=paste("avg unemployment=",round(avg_unemploy_rate,4)), color="red", size=2.5)
 ```
 
 Want a table 
