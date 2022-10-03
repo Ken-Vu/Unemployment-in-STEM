@@ -80,13 +80,42 @@ full_data <- women_stem %>%
 
 ```
 
+```{r, warning=F}
+# Get the outliers
+outlier_pts <- full_data %>%filter(Median > 100000 |(Median > 60000 & Major_category == "Physical Sciences"))
+
+full_data %>%
+  ggplot(aes(x=Major_category,y=Median,
+             color=Major_category,
+             size=Unemployment_rate)) +
+  geom_jitter(alpha=1/4) + # set transparency of points
+  # label outliers
+  geom_text(data=outlier_pts, aes(label=str_wrap(Major,width=15), size=0.01), hjust=0.3, vjust=1.25, color="Black") + 
+  labs(x="Major Category", y="Median Salary ($ Thousands)",
+       title="Median Salary by STEM Major Category",
+       size="Unemployment Rate") +
+  theme(legend.position ="top",
+        plot.title=element_text(hjust=0.5)) + 
+  scale_y_continuous(breaks=c(40000,60000,80000,100000),
+                     labels=c("40","60","80","100")) +
+  guides(color=F, # remove legend for color
+         size=guide_legend( # change size legend
+           override.aes = list(alpha = 1,
+                               size = c(3,4.5,5.8,7)))) +
+  # Wrap text for major categories
+  scale_x_discrete(labels = scales::label_wrap(15))
+
+  
+```
+
 
 ```{r}
 #get a data frame with summary statistics for all major categories
 dat_stats_all <- recent_grads %>%
   group_by(Major_category) %>%
   summarise(UnemploymentRate = sum(Unemployed)/sum(Employed),
-            AvgMedianSalary = mean(Median)) %>%
+            AvgMedianSalary = mean(Median),
+            Workforce = sum(Unemployed) + sum(Employed)) %>%
   mutate(Major_category = Major_category %>% as.factor() %>%
            fct_reorder(UnemploymentRate),
          STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
