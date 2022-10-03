@@ -100,10 +100,14 @@ full_data %>%
                      labels=c("40","60","80","100")) +
   guides(color=F, # remove legend for color
          size=guide_legend( # change size legend
-           override.aes = list(alpha = 1,
-                               size = c(3,4.5,5.8,7)))) +
+           override.aes = list(alpha = 1#,
+                               #size = c(3,4.5,5.8,7)
+                               )
+           )
+         ) +
   # Wrap text for major categories
-  scale_x_discrete(labels = scales::label_wrap(15))
+  scale_x_discrete(labels = scales::label_wrap(15)) +
+  scale_size_binned(breaks = c(0.04, 0.06, 0.08, 0.10, 0.12))
 
   
 ```
@@ -169,9 +173,11 @@ In conclusion, we see that the association between between earnings and unemploy
 
 Therefore we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment. This may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, workers will want to aim for fields which have many job openings relative to their employment size, such as the healthcare or computer-related careers. Other occupations such as certain engineering or mathematics positions may have small employment levels with lower than average expected growth. Overall many STEM careers do enjoy median income above the national average so they are still worth striving for compared to other non-STEM careers with high unemployment and lower median salary.
 
+\newpage
+
 ## Bibliography
 
-Casselman, Ben. “The Economic Guide to Picking a College Major.” FiveThirtyEight, FiveThirtyEight, 12 Sept. 2014, https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/. 
+  Casselman, B. “The Economic Guide to Picking a College Major.” FiveThirtyEight, FiveThirtyEight, 12 Sept. 2014, https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/. 
 
 Terrel, N. (2007). Stem occupations: High-tech jobs for a high-tech economy. Occupational Outlook Quarterly. Retrieved September 30, 2022, from https://www.bls.gov/careeroutlook/2007/spring/art04.pdf 
 
