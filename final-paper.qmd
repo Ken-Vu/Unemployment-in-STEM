@@ -7,6 +7,7 @@ author:
 editor: source
 format:
   pdf:
+    echo: false
     documentclass: scrartcl
     classoption: ["oneside", "open=any"]
     number-sections: true
@@ -16,11 +17,21 @@ format:
     include-in-header: 
       - "in-header.tex"
     toc: true
+    toc-depth: 3
+    lof: true
+    lot: true
 ---
 
 \newpage
   
 ## Introduction
+
+
+Does obtaining a STEM (Science, Technology, Engineering and Mathematics) degree truly ensure that you will obtain a lucrative career? While we know that all STEM degrees do not secure the same level of earnings, surely they are at least equal in employment opportunities. Unfortunately, this is not the case as we've observed.
+
+Although, government agencies and politicians have long espoused the importance of our youth pursuing careers in STEM, the availability of these careers does not always match the market demand of our ever growing workforce. Although entry into some STEM careers is possible with a HS diploma or associates degree, often a minimum of a 4-years bachelor degree will suffice and for some a graduate degree such as a masters or doctoral degree is necessary for entry into specific careers.
+
+As projected, many STEM careers which require degrees do have faster than average employment growth but this is not true across the board for all STEM careers requiring degrees, and in those instances where the growth of the workforce outpaces that of growth of employment opportunities, we end up with highly educated individuals who are either unemployed or underemployed. 
 
 ## Data Description
 
@@ -46,7 +57,125 @@ The data was obtained from the American Community Survey 2010-2012 Public Use Mi
 
 ## Results
 
+```{r}
+library(tidyverse)
+```
+
+
+
+Loading in Data Set (Skip if Done)
+Getting in women in stem data
+```{r}
+women_stem <- read_csv("women-stem.csv")
+women_stem
+```
+
+Getting in `recent_grad` data set
+```{r}
+recent_grads <- read_csv("recent-grads.csv")
+recent_grads
+```
+
+
+Merging the two data sets by major
+```{r}
+full_data <- women_stem %>%
+  inner_join(recent_grads %>% 
+               select(Major, Employed, Unemployed, 
+                      Unemployment_rate), by="Major")
+
+```
+
+EDA
+```{r}
+dat_stats <- full_data %>%
+  group_by(Major_category) %>%
+  summarise(TotalEmployed=sum(Employed),
+            TotalUnemployed=sum(Unemployed),
+            Prop_Employed=TotalEmployed/(TotalEmployed + TotalUnemployed),
+            Prop_Unemployed=TotalUnemployed/(TotalEmployed + TotalUnemployed))
+
+```
+
+The data for unemployment rate by major category
+```{r}
+dat_stats1 <- full_data %>%
+  group_by(Major_category) %>% 
+  summarise(UnemploymentRate=sum(Unemployed)/sum(Employed))
+
+```
+
+
+```{r}
+dat_stats1 <- dat_stats1 %>%
+  mutate(Major_category = Major_category %>% as.factor() %>%
+           fct_reorder(UnemploymentRate))
+dat_stats1
+```
+
+Testing Out Lydia's Suggestions
+FIrst, get a data frame with summary statistics for all major categories
+```{r}
+dat_stats_all <- recent_grads %>%
+  group_by(Major_category) %>%
+  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed),
+            AvgMedianSalary = mean(Median)) %>%
+  mutate(Major_category = Major_category %>% as.factor() %>%
+           fct_reorder(UnemploymentRate),
+         STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
+                             "No","Yes") %>% as.factor() %>%
+           fct_relevel("Yes"))
+dat_stats_all
+```
+
+
+```{r}
+dat_stats_all %>%
+  ggplot(aes(y=Major_category, 
+             x=UnemploymentRate, fill=STEM_Major)) +
+  geom_col() + 
+  # manually change fill colors
+  scale_fill_manual(values=c("#0066CC","#bebebe")) +
+  # add red line representing average unemployment rate 
+  geom_vline(xintercept=mean(recent_grads$Unemployment_rate),
+             color="red", size=2) + 
+  labs(x="Unemployment Rate", y="Major Category",
+       title="Unemployment Rate by Major Category",
+       fill="STEM") + 
+  # change title size
+  theme(plot.title=element_text(hjust=0.5,size=20)) + 
+  # annotate vertical line
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.013,
+           y=5, label="average", color="red") + 
+  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.017,
+           y=4.25, label="unemployment", color="red")
+```
+
+Want a table 
+so for each major category, the unemployment rate and the average median salary
+```{r}
+df1 <- dat_stats_all %>% 
+  arrange(desc(AvgMedianSalary)) %>%
+  select(c("Major_category","AvgMedianSalary","UnemploymentRate"))
+names(df1) <- c("Major Category", "Average Median Salary",
+                "Unemployment Rate")
+df1 
+```
+
+## Conclusion
+
+In conclusion, we see that the association between between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
+
+Therefore we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment. This may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, workers will want to aim for fields which have many job openings relative to their employment size, such as the healthcare or computer-related careers. Other occupations such as certain engineering or mathematics positions may have small employment levels with lower than average expected growth. Overall many STEM careers do enjoy median income above the national average so they are still worth striving for compared to other non-STEM careers with high unemployment and lower median salary.
+
+
 ## Bibliography
+
+Casselman, Ben. “The Economic Guide to Picking a College Major.” FiveThirtyEight, FiveThirtyEight, 12 Sept. 2014, https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/. 
+
+Terrel, N. (2007). Stem occupations: High-tech jobs for a high-tech economy. Occupational Outlook Quarterly. Retrieved September 30, 2022, from https://www.bls.gov/careeroutlook/2007/spring/art04.pdf 
+
+Vilorio, D. (2014). Stem 101: Intro to Tomorrow's Jobs - Bureau of Labor Statistics. Occupational Outlook Quarterly. Retrieved September 30, 2022, from https://www.bls.gov/careeroutlook/2014/spring/art01.pdf 
 
 ## Code Appendix
 

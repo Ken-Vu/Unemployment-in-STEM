@@ -23,7 +23,11 @@ format:
   
 ## Introduction
 
+Does obtaining a STEM (Science, Technology, Engineering and Mathematics) degree truly ensure that you will obtain a lucrative career? While we know that all STEM degrees do not secure the same level of earnings, surely they are at least equal in employment opportunities. Unfortunately, this is not the case as we've observed.
 
+Although, government agencies and politicians have long espoused the importance of our youth pursuing careers in STEM, the availability of these careers does not always match the market demand of our ever growing workforce. Although entry into some STEM careers is possible with a HS diploma or associates degree, often a minimum of a 4-years bachelor degree will suffice and for some a graduate degree such as a masters or doctoral degree is necessary for entry into specific careers.
+
+As projected, many STEM careers which require degrees do have faster than average employment growth but this is not true across the board for all STEM careers requiring degrees, and in those instances where the growth of the workforce outpaces that of growth of employment opportunities, we end up with highly educated individuals who are either unemployed or underemployed. 
 
 ## Data Description
 
@@ -49,7 +53,7 @@ The data was obtained from the American Community Survey 2010-2012 Public Use Mi
 
 ## Results
 
-```{r}
+```{r include=FALSE}
 library(tidyverse)
 ```
 
@@ -57,15 +61,15 @@ library(tidyverse)
 
 Loading in Data Set (Skip if Done)
 Getting in women in stem data
-```{r}
+```{r include=FALSE}
 women_stem <- read_csv("women-stem.csv")
-women_stem
+#women_stem
 ```
 
 Getting in `recent_grad` data set
-```{r}
+```{r include=FALSE}
 recent_grads <- read_csv("recent-grads.csv")
-recent_grads
+#recent_grads
 ```
 
 
@@ -101,7 +105,7 @@ dat_stats1 <- full_data %>%
 dat_stats1 <- dat_stats1 %>%
   mutate(Major_category = Major_category %>% as.factor() %>%
            fct_reorder(UnemploymentRate))
-dat_stats1
+#dat_stats1
 ```
 
 Testing Out Lydia's Suggestions
@@ -116,7 +120,7 @@ dat_stats_all <- recent_grads %>%
          STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
                              "No","Yes") %>% as.factor() %>%
            fct_relevel("Yes"))
-dat_stats_all
+#dat_stats_all
 ```
 
 
@@ -143,7 +147,8 @@ dat_stats_all %>%
   theme(plot.title=element_text(hjust=0.5,size=16)) + 
   # annotate vertical line
   annotate("text",x=avg_unemploy_rate, 
-           y=4.5, label=paste("avg unemployment=",round(avg_unemploy_rate,4)), color="red", size=2.5)
+         y=1, label=paste("avg=", "","", "","", "","",round(avg_unemploy_rate,4)), color="red", size=4)
+  
 ```
 
 Want a table 
@@ -154,10 +159,14 @@ df1 <- dat_stats_all %>%
   select(c("Major_category","AvgMedianSalary","UnemploymentRate"))
 names(df1) <- c("Major Category", "Average Median Salary",
                 "Unemployment Rate")
-df1 
+#df1 
 ```
 
+## Conclusion
 
+In conclusion, we see that the association between between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
+
+Therefore we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment. This may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, workers will want to aim for fields which have many job openings relative to their employment size, such as the healthcare or computer-related careers. Other occupations such as certain engineering or mathematics positions may have small employment levels with lower than average expected growth. Overall many STEM careers do enjoy median income above the national average so they are still worth striving for compared to other non-STEM careers with high unemployment and lower median salary.
 
 ## Bibliography
 
