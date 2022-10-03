@@ -80,7 +80,7 @@ full_data <- women_stem %>%
 
 ```
 
-```{r, warning=F}
+```{r, warning=F, fig.height = 8, fig.width = 8}
 # Get the outliers
 outlier_pts <- full_data %>%filter(Median > 100000 |(Median > 60000 & Major_category == "Physical Sciences"))
 
