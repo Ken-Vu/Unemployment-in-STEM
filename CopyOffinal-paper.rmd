@@ -10,7 +10,7 @@ format:
     echo: false
     documentclass: scrartcl
     classoption: ["oneside", "open=any"]
-    number-sections: true
+    number-sections: false
     template-partials:
       - "before-body.tex"
       - "_titlepage.tex" 
@@ -120,26 +120,29 @@ dat_stats_all
 ```
 
 
-```{r}
+```{r fig.height = 8, fig.width = 10}
 dat_stats_all %>%
   ggplot(aes(y=Major_category, 
              x=UnemploymentRate, fill=STEM_Major)) +
   geom_col() + 
+  #wrap y-axis label text
+  scale_y_discrete(labels = scales::label_wrap(20)) +
+  # add breaks to x-axis in 0.01 intervals
+    scale_x_continuous(
+    breaks = c(0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11)) +
   # manually change fill colors
   scale_fill_manual(values=c("#0066CC","#bebebe")) +
   # add red line representing average unemployment rate 
   geom_vline(xintercept=mean(recent_grads$Unemployment_rate),
-             color="red", size=2) + 
+             color="red", linetype=2) + 
   labs(x="Unemployment Rate", y="Major Category",
        title="Unemployment Rate by Major Category",
        fill="STEM") + 
   # change title size
   theme(plot.title=element_text(hjust=0.5,size=16)) + 
   # annotate vertical line
-  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.019,
-           y=5, label="average", color="red", size=2.5) + 
-  annotate("text",x=mean(recent_grads$Unemployment_rate) + 0.023,
-           y=4.5, label="unemployment", color="red", size=2.5)
+  annotate("text",x=mean(recent_grads$Unemployment_rate), #+ 0.023,
+           y=4.5, label="avg unemployment", color="red", size=2.5)
 ```
 
 Want a table 
