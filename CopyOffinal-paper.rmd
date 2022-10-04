@@ -34,20 +34,30 @@ As projected, many STEM careers which require degrees do have faster than averag
 
 \setlength\parindent{24pt}        
 
-The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **76 rows** by **12 columns**. The variables are: `Rank`, `Major_code`, `Major`, `Major_category`, `Total`, `Men`, `Women`, `ShareWomen`, `Employed`, `Unemployed`, `Unemployment_rate`, and `Median`. Below are descriptions of each variable.
+The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **173 rows** by **21 columns**. Below are our variables and their descriptions.
 
-- `Median`: Median earnings of full-time, year-round workers
+
 - `Rank`: Rank by median earnings
 - `Major_code`: Major code, FO1DP in ACS PUMS
 - `Major`: Major description
 - `Major_category`: Category of major from Carnevale et al
 - `Total`: Total number of people with major
+- `Sample_size`: Sample size (unweighted) of full-time, year-round ONLY (used for earnings)
 - `Men`: Male graduates
 - `Women`: Female graduates
 - `ShareWomen`: Women as share of Total
 - `Employed`: Number employed (ESR == 1 or 2)
+- `Full_time`: Employed 35 hours or more
+- `Part_time`: Employed less than 35 hours
+- `Full_time_year_round` | Employed at least 50 weeks (WKW == 1) and at least 35 hours (WKHP >= 35)
 - `Unemployed`: Number unemployed (ESR == 3)
 - `Unemployment_rate`: Unemployed / (Unemployed + Employed)
+- `Median`: Median earnings of full-time, year-round workers
+- `P25th`: 25th percentile of earnings
+- `P75th`: 75th percentile of earnings
+- `College_jobs`: Number with job requiring a college degree
+- `Non_college_jobs`: Number with job not requiring a college degree
+- `Low_wage_jobs`: Number in low-wage service jobs
 
 
 
@@ -82,6 +92,80 @@ full_data <- women_stem %>%
 
 ```
 
+In the table below, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`,`Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployent Rate for all major categories, made even more evident by the chart below. 
+
+```{r}
+#get a data frame with summary statistics for all major categories
+dat_stats_all <- recent_grads %>%
+  group_by(Major_category) %>%
+  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed),
+            AvgMedianSalary = mean(Median),
+            Workforce = sum(Unemployed) + sum(Employed)) %>%
+  mutate(Major_category = Major_category %>% as.factor() %>%
+           fct_reorder(UnemploymentRate),
+         STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
+                             "No","Yes") %>% as.factor() %>%
+           fct_relevel("Yes"))
+#dat_stats_all
+```
+
+
+
+
+```{r}
+#table for each major category with the unemployment rate and the average median salary
+df1 <- dat_stats_all %>% 
+ # mutate(recent_grads, Workforce = sum(Unemployed) + sum(Employed))%>%
+  arrange(desc(AvgMedianSalary)) %>%
+  select(c("Major_category","AvgMedianSalary","UnemploymentRate"))#, "Workforce"))
+names(df1) <- c("Major Category", "Average Median Salary ($)",
+                "Unemployment Rate")
+df1 %>% 
+  kable() %>% 
+  # add borders everywhere
+  kable_styling(bootstrap_options = "bordered",
+                full_width = FALSE) %>%
+  # Add borders left and right as well as wrap text
+  column_spec(c(1), border_left=T, width="7em") %>%
+  column_spec(c(3), border_right=T, width="8em") %>%
+  # wrap text for 2nd column
+  column_spec(c(2), width="10em") %>%
+  # make column headers bold
+  row_spec(c(0), bold=T, font_size = 12)
+```
+
+
+In this bar plot, you see that STEM major categories `Physical Sciences` and `Health` are below the average unemployment rate of 6.82% for all major categories with rates of 5.66% and 5.97% respectively. The other STEM majors are not too far off with unemployment rates of 7.09%, 7.75%, and 7.72% for `Engineering`, `Biology & Life Sciences` and `Computers & Mathematics`. For all major categories, the minimum unemployment rate was 5.20% for `Education` and the maximum was 10.70% for `Social Science`.
+
+```{r fig.height = 8, fig.width = 10}
+avg_unemploy_rate = mean(recent_grads$Unemployment_rate)
+dat_stats_all %>%
+  ggplot(aes(y=Major_category, 
+             x=UnemploymentRate, fill=STEM_Major)) +
+  geom_col() + 
+  #wrap y-axis label text
+  scale_y_discrete(labels = scales::label_wrap(20)) +
+  # add breaks to x-axis in 0.01 intervals
+    scale_x_continuous(
+    breaks = c(0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11)) +
+  # manually change fill colors
+  scale_fill_manual(values=c("#0066CC","#bebebe")) +
+  # add red line representing average unemployment rate 
+  geom_vline(xintercept=avg_unemploy_rate,
+             color="red", linetype=2) + 
+  labs(x="Unemployment Rate", y="Major Category",
+       title="Unemployment Rate by Major Category",
+       fill="STEM") + 
+  # change title size
+  theme(plot.title=element_text(hjust=0.5,size=16)) + 
+  # annotate vertical line
+  annotate("text",x=avg_unemploy_rate, 
+         y=1, label=paste("avg=", "","", "","", "","",round(avg_unemploy_rate,4)), color="red", size=4)
+  
+```
+
+In this jitter plot, we visualize the summary statistics of individual majors within STEM major categories by their median salary with the bubble size correlated to the unemployment rate of each major. We again see that the physical sciences and health majors tend to have lower rates of unemployment but visually a fairly average median salary in comparison to other STEM major categories, with the exception of engineering majors which by in large have visually higher median salaries than all of the other STEM majors. As expected, we see that computer and mathematics majors on the whole have higher unemployment rates than the majors in the other STEM major categories.
+
 ```{r, warning=F, fig.height = 8, fig.width = 8}
 # Get the outliers
 outlier_pts <- full_data %>%filter(Median > 100000 |(Median > 60000 & Major_category == "Physical Sciences"))
@@ -115,70 +199,7 @@ full_data %>%
 ```
 
 
-```{r}
-#get a data frame with summary statistics for all major categories
-dat_stats_all <- recent_grads %>%
-  group_by(Major_category) %>%
-  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed),
-            AvgMedianSalary = mean(Median),
-            Workforce = sum(Unemployed) + sum(Employed)) %>%
-  mutate(Major_category = Major_category %>% as.factor() %>%
-           fct_reorder(UnemploymentRate),
-         STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
-                             "No","Yes") %>% as.factor() %>%
-           fct_relevel("Yes"))
-#dat_stats_all
-```
 
-
-```{r fig.height = 8, fig.width = 10}
-avg_unemploy_rate = mean(recent_grads$Unemployment_rate)
-dat_stats_all %>%
-  ggplot(aes(y=Major_category, 
-             x=UnemploymentRate, fill=STEM_Major)) +
-  geom_col() + 
-  #wrap y-axis label text
-  scale_y_discrete(labels = scales::label_wrap(20)) +
-  # add breaks to x-axis in 0.01 intervals
-    scale_x_continuous(
-    breaks = c(0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11)) +
-  # manually change fill colors
-  scale_fill_manual(values=c("#0066CC","#bebebe")) +
-  # add red line representing average unemployment rate 
-  geom_vline(xintercept=avg_unemploy_rate,
-             color="red", linetype=2) + 
-  labs(x="Unemployment Rate", y="Major Category",
-       title="Unemployment Rate by Major Category",
-       fill="STEM") + 
-  # change title size
-  theme(plot.title=element_text(hjust=0.5,size=16)) + 
-  # annotate vertical line
-  annotate("text",x=avg_unemploy_rate, 
-         y=1, label=paste("avg=", "","", "","", "","",round(avg_unemploy_rate,4)), color="red", size=4)
-  
-```
-
-
-```{r}
-#table for each major category with the unemployment rate and the average median salary
-df1 <- dat_stats_all %>% 
-  arrange(desc(AvgMedianSalary)) %>%
-  select(c("Major_category","AvgMedianSalary","UnemploymentRate"))
-names(df1) <- c("Major Category", "Average Median Salary ($)",
-                "Unemployment Rate")
-df1 %>% 
-  kable() %>% 
-  # add borders everywhere
-  kable_styling(bootstrap_options = "bordered",
-                full_width = FALSE) %>%
-  # Add borders left and right as well as wrap text
-  column_spec(c(1), border_left=T, width="7em") %>%
-  column_spec(c(3), border_right=T, width="8em") %>%
-  # wrap text for 2nd column
-  column_spec(c(2), width="10em") %>%
-  # make column headers bold
-  row_spec(c(0), bold=T, font_size = 12)
-```
 
 ## Conclusion
 
