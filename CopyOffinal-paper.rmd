@@ -92,13 +92,13 @@ full_data <- women_stem %>%
 
 ```
 
-In the table below, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`,`Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployent Rate for all major categories, made even more evident by the chart below. 
+In the table below, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployment Rate for all major categories, made even more evident by the chart below. 
 
 ```{r}
 #get a data frame with summary statistics for all major categories
 dat_stats_all <- recent_grads %>%
   group_by(Major_category) %>%
-  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed),
+  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed+Unemployed),
             AvgMedianSalary = mean(Median),
             Workforce = sum(Unemployed) + sum(Employed)) %>%
   mutate(Major_category = Major_category %>% as.factor() %>%
@@ -136,7 +136,7 @@ df1 %>%
 ```
 
 
-In this bar plot, you see that STEM major categories `Physical Sciences` and `Health` are below the average unemployment rate of 6.82% for all major categories with rates of 5.66% and 5.97% respectively. The other STEM majors are not too far off with unemployment rates of 7.09%, 7.75%, and 7.72% for `Engineering`, `Biology & Life Sciences` and `Computers & Mathematics`. For all major categories, the minimum unemployment rate was 5.20% for `Education` and the maximum was 10.70% for `Social Science`.
+In this bar plot, you see that STEM major categories `Physical Sciences`, `Health`, and `Engineering` are below the average unemployment rate of 6.82% for all major categories with rates of 5.36%, 5.6.3%, and 6.62% respectively. The other STEM majors are not too far off with unemployment rates of 7.02% and 7.17% for `Biology & Life Sciences` and `Computers & Mathematics`. For all major categories, the minimum unemployment rate was 4.95% for `Education` and the maximum was 9.67% for `Social Science`.
 
 ```{r fig.height = 8, fig.width = 10}
 avg_unemploy_rate = mean(recent_grads$Unemployment_rate)
@@ -194,7 +194,7 @@ full_data %>%
          ) +
   # Wrap text for major categories
   scale_x_discrete(labels = scales::label_wrap(15)) +
-  scale_size_binned(breaks = c(0.04, 0.06, 0.08, 0.10, 0.12))
+  scale_size_binned(breaks = c(0.04, 0.05, 0.06, 0.07, 0.08, 0.09))
 
   
 ```
@@ -214,7 +214,7 @@ Overall, many STEM careers do enjoy median income above the national average so 
 
 ## Bibliography
 
-  Casselman, B. “The Economic Guide to Picking a College Major.” FiveThirtyEight, FiveThirtyEight, 12 Sept. 2014, https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/. 
+Casselman, B. (2014). The Economic Guide to Picking a College Major. FiveThirtyEight. Retrieved September 30, 2022, from https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/. 
 
 Terrel, N. (2007). Stem occupations: High-tech jobs for a high-tech economy. Occupational Outlook Quarterly. Retrieved September 30, 2022, from https://www.bls.gov/careeroutlook/2007/spring/art04.pdf 
 
