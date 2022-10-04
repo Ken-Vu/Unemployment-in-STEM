@@ -117,9 +117,8 @@ dat_stats_all <- recent_grads %>%
 df1 <- dat_stats_all %>% 
  # mutate(recent_grads, Workforce = sum(Unemployed) + sum(Employed))%>%
   arrange(desc(AvgMedianSalary)) %>%
-  select(c("Major_category","AvgMedianSalary","UnemploymentRate"))#, "Workforce"))
-names(df1) <- c("Major Category", "Average Median Salary ($)",
-                "Unemployment Rate")
+  select(c("Major_category","AvgMedianSalary","UnemploymentRate", "Workforce"))
+names(df1) <- c("Major Category", "Average Median Salary ($)","Unemployment Rate", "Workforce")
 df1 %>% 
   kable() %>% 
   # add borders everywhere
@@ -127,11 +126,13 @@ df1 %>%
                 full_width = FALSE) %>%
   # Add borders left and right as well as wrap text
   column_spec(c(1), border_left=T, width="7em") %>%
-  column_spec(c(3), border_right=T, width="8em") %>%
+  column_spec(c(4), border_right=T, width="8em") %>%
   # wrap text for 2nd column
   column_spec(c(2), width="10em") %>%
   # make column headers bold
-  row_spec(c(0), bold=T, font_size = 12)
+  row_spec(c(0), bold=T, font_size = 12, background="#808080") %>%
+  # make all STEM categories bold
+  row_spec(which(df1$`Major Category` %in% unique(women_stem$Major_category)), bold=T)
 ```
 
 
