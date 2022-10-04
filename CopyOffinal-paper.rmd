@@ -55,6 +55,8 @@ The data was obtained from the American Community Survey 2010-2012 Public Use Mi
 
 ```{r include=FALSE}
 library(tidyverse)
+library(knitr)
+library(kableExtra)
 ```
 
 ```{r include=FALSE}
@@ -162,16 +164,29 @@ dat_stats_all %>%
 df1 <- dat_stats_all %>% 
   arrange(desc(AvgMedianSalary)) %>%
   select(c("Major_category","AvgMedianSalary","UnemploymentRate"))
-names(df1) <- c("Major Category", "Average Median Salary",
+names(df1) <- c("Major Category", "Average Median Salary ($)",
                 "Unemployment Rate")
-#df1 
+df1 %>% 
+  kable() %>% 
+  # add borders everywhere
+  kable_styling(bootstrap_options = "bordered",
+                full_width = FALSE) %>%
+  # Add borders left and right as well as wrap text
+  column_spec(c(1), border_left=T, width="7em") %>%
+  column_spec(c(3), border_right=T, width="8em") %>%
+  # wrap text for 2nd column
+  column_spec(c(2), width="10em") %>%
+  # make column headers bold
+  row_spec(c(0), bold=T, font_size = 12)
 ```
 
 ## Conclusion
 
-In conclusion, we see that the association between between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
+In conclusion, we see that the association between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also, we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
 
-Therefore we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment. This may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, workers will want to aim for fields which have many job openings relative to their employment size, such as the healthcare or computer-related careers. Other occupations such as certain engineering or mathematics positions may have small employment levels with lower than average expected growth. Overall many STEM careers do enjoy median income above the national average so they are still worth striving for compared to other non-STEM careers with high unemployment and lower median salary.
+Therefore, we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment. This may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, potential workers will want to aim for fields with many job openings relative to their employment size, such as those pertaining to healthcare or computer-related careers. Other occupations (particularly, certain engineering or mathematics positions) may have small employment levels with lower than average expected growth.
+
+Overall, many STEM careers do enjoy median income above the national average so they are still worth striving for compared to other non-STEM careers with high unemployment and lower median salary.
 
 \newpage
 
