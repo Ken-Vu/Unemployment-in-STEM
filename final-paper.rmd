@@ -102,9 +102,7 @@ dat_stats_all <- recent_grads %>%
 #dat_stats_all
 ```
 
-
-
-\setlength\parindent{24pt}         In *Table 1*, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployment Rate for all major categories, made even more evident by *Figure 1*. 
+\setlength\parindent{24pt}         In *Table 1*, we list all 16 major categories and their average median salaries and workforce sizes arranged in descending order by unemployment rate. We highlight the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences`. Below, we find that STEM major categories are in the top eight for Average Median Salary as well as in the bottom ten for Unemployment Rate for all major categories (see *Figure 1*). 
 
 ```{r}
 #table for each major category with the unemployment rate and the average median salary
@@ -131,11 +129,10 @@ table1 <- df1 %>%
 #table1
 ```
 
-
-
+![](table1_loaded.jpg)
 ***Table 1:*** Average median salary ($), unemployment rate, and total workforce sample size data by major category. \newline
 
-In *Figure 1*, you see that STEM major categories `Physical Sciences`, `Health`, and `Engineering` are below the average unemployment rate of 6.82% for all major categories with rates of 5.36%, 5.6.3%, and 6.62% respectively. The other STEM major categories are not too far off with unemployment rates of 7.02% and 7.17% for `Biology & Life Sciences` and `Computers & Mathematics`. For all major categories, the minimum unemployment rate was 4.95% for `Education` and the maximum was 9.67% for `Social Science`.
+In *Figure 1*, you see that the STEM major categories `Physical Sciences`, `Health`, and `Engineering` are below the average unemployment rate of 6.82% for all major categories with rates of 5.36%, 5.6.3%, and 6.62% respectively. The other STEM major categories are not too far off with unemployment rates of 7.02% and 7.17% for `Biology & Life Sciences` and `Computers & Mathematics`. For all major categories, the minimum unemployment rate was 4.95% for `Education` and the maximum was 9.67% for `Social Science`.
 
 ```{r fig.height = 8, fig.width = 10}
 avg_unemploy_rate = mean(recent_grads$Unemployment_rate)
@@ -209,11 +206,11 @@ full_data %>%
 \newpage
 ## Conclusion
 
-\setlength\parindent{24pt}         In conclusion, we see that the association between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also, we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
+\setlength\parindent{24pt}         In conclusion, we saw that the association between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also, we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
 
-Therefore, we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment. This may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, potential workers will want to aim for fields with many job openings relative to their employment size, such as those pertaining to healthcare or computer-related careers. Other occupations (particularly, certain engineering or mathematics positions) may have small employment levels with lower than average expected growth.
+Therefore, we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment; however, we suspect it may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, potential workers will want to aim for fields with many job openings relative to their employment size, such as those pertaining to healthcare or computer-related careers. Other occupations (particularly, certain engineering or mathematics positions) may have small employment levels with lower than average expected growth.
 
-Overall, many STEM careers do enjoy median income above the national average so they are still worth striving for compared to other non-STEM careers with high unemployment and lower median salary.
+Overall, many STEM careers do enjoy median incomes above the national average so they are still worth striving for compared to other non-STEM careers with high unemployment and lower median salary.
 
 \newpage
 
