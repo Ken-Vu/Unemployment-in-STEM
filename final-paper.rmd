@@ -103,7 +103,7 @@ dat_stats_all <- recent_grads %>%
 ```
 
 
-In this bar plot, you see that STEM major categories `Physical Sciences`, `Health`, and `Engineering` are below the average unemployment rate of 6.82% for all major categories with rates of 5.36%, 5.6.3%, and 6.62% respectively. The other STEM majors are not too far off with unemployment rates of 7.02% and 7.17% for `Biology & Life Sciences` and `Computers & Mathematics`. For all major categories, the minimum unemployment rate was 4.95% for `Education` and the maximum was 9.67% for `Social Science`.
+In *Figure 1*, you see that STEM major categories `Physical Sciences`, `Health`, and `Engineering` are below the average unemployment rate of 6.82% for all major categories with rates of 5.36%, 5.6.3%, and 6.62% respectively. The other STEM major categories are not too far off with unemployment rates of 7.02% and 7.17% for `Biology & Life Sciences` and `Computers & Mathematics`. For all major categories, the minimum unemployment rate was 4.95% for `Education` and the maximum was 9.67% for `Social Science`.
 
 ```{r fig.height = 8, fig.width = 10}
 avg_unemploy_rate = mean(recent_grads$Unemployment_rate)
@@ -132,10 +132,10 @@ dat_stats_all %>%
   
 ```
 
-***Figure 1:*** Unemployment rates by major category with STEM ones highlighted in blue and the overall average unemployment rate represented by a red dotted vertical line. \newline
+***Figure 1:*** Unemployment rates by major category with STEM major categories highlighted in blue and the overall average unemployment rate represented by a red dotted vertical line. \newline
 
 
-In this jitter plot, we visualize the summary statistics of individual majors within STEM major categories by their median salary with the bubble size correlated to the unemployment rate of each major. We again see that the physical sciences and health majors tend to have lower rates of unemployment but visually a fairly average median salary in comparison to other STEM major categories, with the exception of engineering majors which by in large have visually higher median salaries than all of the other STEM majors. As expected, we see that computer and mathematics majors on the whole have higher unemployment rates than the majors in the other STEM major categories.
+In *Figure 2*, we visualize the summary statistics of individual majors within STEM major categories by their median salary with the bubble size reflective of the unemployment rate of each major. We again see that the physical sciences and health majors tend to have lower rates of unemployment but visually a fairly average median salary in comparison to other STEM major categories, with the exception of engineering majors which by in large have visually higher median salaries than all of the other STEM majors. As expected, we see that computer and mathematics majors on the whole have higher unemployment rates than the majors in the other STEM major categories.
 
 ```{r, warning = F, fig.height = 8, fig.width = 8}
 # Get the outliers
@@ -157,8 +157,8 @@ full_data %>%
                      labels = c("40", "60", "80", "100")) +
   guides(color = F, # remove legend for color
          size = guide_legend( # change size legend
-           override.aes = list(alpha = 1#,
-                               #size = c(3,4.5,5.8,7)
+           override.aes = list(alpha = 1
+                               
                                )
            )
          ) +
@@ -168,17 +168,16 @@ full_data %>%
 
   
 ```
-***Figure 2:*** Jitter plot of unemployment rate by STEM major category.
+***Figure 2:*** Jitterplot of median salary of STEM majors, divided by major categories and size reflective of unemployment rate.
 
 \newpage
-\setlength\parindent{24pt}         In the table below, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployment Rate for all major categories, made even more evident by the chart below. 
+\setlength\parindent{24pt}         In *Table 1*, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployment Rate for all major categories, made even more evident by *Figure 1*. 
 \newline
 ```{r}
 #table for each major category with the unemployment rate and the average median salary
 df1 <- dat_stats_all %>% 
- # mutate(recent_grads, Workforce = sum(Unemployed) + sum(Employed))%>%
   arrange(desc(AvgMedianSalary)) %>%
-  select(c("Major_category","AvgMedianSalary","UnemploymentRate", "Workforce"))
+  select(c("Major_category" , "Workforce" , "UnemploymentRate" , "AvgMedianSalary" )) 
 names(df1) <- c("Major Category" , "Workforce Sample Size" , "Unemployment Rate" , "Average Median Salary ($)")
 
 table1 <- df1 %>% 
