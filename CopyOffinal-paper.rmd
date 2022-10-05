@@ -23,7 +23,7 @@ format:
   
 ## Introduction
 
-Does obtaining a STEM (Science, Technology, Engineering and Mathematics) degree truly ensure that you will obtain a lucrative career? While we know that all STEM degrees do not secure the same level of earnings, surely they are at least equal in employment opportunities. Unfortunately, this is not the case as we've observed.
+\setlength\parindent{24pt}       Does obtaining a STEM (Science, Technology, Engineering and Mathematics) degree truly ensure that you will obtain a lucrative career? While we know that all STEM degrees do not secure the same level of earnings, surely they are at least equal in employment opportunities. Unfortunately, this is not the case as we've observed.
 
 Although government agencies and politicians have long espoused the importance of our youth pursuing careers in STEM, the availability of these careers does not always match the market demand of our ever growing workforce. Although entry into some STEM careers is possible with a HS diploma or associates degree, often a minimum of a 4-years bachelor degree is mandatory and for others, a graduate degree such as a masters or doctoral degree is necessary for entry into specific careers.
 
@@ -31,10 +31,7 @@ As projected, many STEM careers which require degrees do have faster than averag
 
 ## Data Description
 
-
-\setlength\parindent{24pt}        
-
-The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **173 rows** by **21 columns**. Below are our variables and their descriptions.
+\setlength\parindent{24pt}         The data was obtained from the American Community Survey 2010-2012 Public Use Microdata Series and used in the fivethirtyeight story [The Economic Guide To Picking A College Major](https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/). Our data dimensions are **173 rows** by **21 columns**. Below are our variables and their descriptions.
 
 
 - `Rank`: Rank by median earnings
@@ -59,10 +56,7 @@ The data was obtained from the American Community Survey 2010-2012 Public Use Mi
 - `Non_college_jobs`: Number with job not requiring a college degree
 - `Low_wage_jobs`: Number in low-wage service jobs
 
-
-
 ## Results
-
 ```{r include=FALSE}
 library(tidyverse)
 library(knitr)
@@ -92,47 +86,20 @@ full_data <- women_stem %>%
 
 ```
 
-In the table below, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployment Rate for all major categories, made even more evident by the chart below. 
 
 ```{r}
 #get a data frame with summary statistics for all major categories
 dat_stats_all <- recent_grads %>%
   group_by(Major_category) %>%
-  summarise(UnemploymentRate = sum(Unemployed) / sum(Employed + Unemployed),
-            AvgMedianSalary = mean(Median),
-            Workforce = sum(Unemployed) + sum(Employed)) %>%
+  summarise(AvgMedianSalary = mean(Median),
+            Workforce = sum(Unemployed) + sum(Employed),
+            UnemploymentRate = sum(Unemployed) / Workforce) %>%
   mutate(Major_category = Major_category %>% as.factor() %>%
            fct_reorder(UnemploymentRate),
          STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
                              "No" , "Yes") %>% as.factor() %>%
            fct_relevel("Yes"))
 #dat_stats_all
-```
-
-
-
-
-```{r}
-#table for each major category with the unemployment rate and the average median salary
-df1 <- dat_stats_all %>% 
- # mutate(recent_grads, Workforce = sum(Unemployed) + sum(Employed))%>%
-  arrange(desc(AvgMedianSalary)) %>%
-  select(c("Major_category","AvgMedianSalary","UnemploymentRate", "Workforce"))
-names(df1) <- c("Major Category" , "Workforce" , "Unemployment Rate" , "Average Median Salary ($)")
-df1 %>% 
-  kable() %>% 
-  # add borders everywhere
-  kable_styling(bootstrap_options = "bordered",
-                full_width = FALSE) %>%
-  # Add borders left and right as well as wrap text
-  column_spec(c(1), border_left = T, width = "7em") %>%
-  column_spec(c(4), border_right = T, width = "8em") %>%
-  # wrap text for 2nd column
-  column_spec(c(2), width = "10em") %>%
-  # make column headers bold
-  row_spec(c(0), bold = T, font_size = 12, background = "#808080") %>%
-  # make all STEM categories bold
-  row_spec(which(df1$`Major Category` %in% unique(women_stem$Major_category)), bold = T)
 ```
 
 
@@ -164,6 +131,9 @@ dat_stats_all %>%
          y = 1, label = paste("avg=", "","", "","", "","",round(avg_unemploy_rate,4)), color = "red", size = 4)
   
 ```
+
+***Figure 1:*** Unemployment rates by major category with STEM ones highlighted in blue and the overall average unemployment rate represented by a red dotted vertical line. \newline
+
 
 In this jitter plot, we visualize the summary statistics of individual majors within STEM major categories by their median salary with the bubble size correlated to the unemployment rate of each major. We again see that the physical sciences and health majors tend to have lower rates of unemployment but visually a fairly average median salary in comparison to other STEM major categories, with the exception of engineering majors which by in large have visually higher median salaries than all of the other STEM majors. As expected, we see that computer and mathematics majors on the whole have higher unemployment rates than the majors in the other STEM major categories.
 
@@ -198,13 +168,42 @@ full_data %>%
 
   
 ```
+***Figure 2:*** Jitter plot of unemployment rate by STEM major category.
 
+\newpage
+\setlength\parindent{24pt}         In the table below, you see the listing of all 16 major categories, their average median salary, size of their workforce, arranged in descending order of their employment rate. We've highlighted the STEM major categories: `Biology & Life Sciences` , `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences`. From this table you see that not only are the STEM major categories in the top eight for Average Median Salary, they are in the bottom ten for Unemployment Rate for all major categories, made even more evident by the chart below. 
+\newline
+```{r}
+#table for each major category with the unemployment rate and the average median salary
+df1 <- dat_stats_all %>% 
+ # mutate(recent_grads, Workforce = sum(Unemployed) + sum(Employed))%>%
+  arrange(desc(AvgMedianSalary)) %>%
+  select(c("Major_category","AvgMedianSalary","UnemploymentRate", "Workforce"))
+names(df1) <- c("Major Category" , "Workforce Sample Size" , "Unemployment Rate" , "Average Median Salary ($)")
 
+table1 <- df1 %>% 
+  kable() %>% 
+  # add borders everywhere
+  kable_styling(bootstrap_options = "bordered",
+                full_width = FALSE, font_size=9) %>%
+  # Add borders left and right as well as wrap text
+  column_spec(c(1), border_left = T, width = "7em") %>%
+  column_spec(c(4), border_right = T, width = "10em") %>%
+  # wrap text for 2nd and 3rd column
+  column_spec(c(2,3), width = "9em") %>%
+  # make column headers bold
+  row_spec(c(0), bold = T, font_size = 11) %>%
+  # make all STEM categories bold
+  row_spec(which(df1$`Major Category` %in% unique(women_stem$Major_category)), bold = T)
+```
 
+![](table_1_loaded.jpg)
+***Table 1:*** Average median salary ($), unemployment rate, and total workforce sample size data by major category. \newline
 
+\newpage
 ## Conclusion
 
-In conclusion, we see that the association between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also, we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
+\setlength\parindent{24pt}         In conclusion, we see that the association between earnings and unemployment is indeed weak as evidenced by the relatively low earnings with the major category of health care yet lower than average unemployment rate in contrast to the higher earnings in the engineering major category yet higher than average unemployment. Also, we found that those earning degrees in STEM major categories of Computers & Mathematics, Biology & Life Sciences, and Engineering had a higher than average unemployment level across all STEM and non-STEM major categories. 
 
 Therefore, we cannot conclude that obtaining a degree in a STEM field is the magic bullet to ensuring lucrative employment. This may be due to the fact that the varying occupations requiring such degrees have differing levels of growth and employment levels. Ideally, potential workers will want to aim for fields with many job openings relative to their employment size, such as those pertaining to healthcare or computer-related careers. Other occupations (particularly, certain engineering or mathematics positions) may have small employment levels with lower than average expected growth.
 
