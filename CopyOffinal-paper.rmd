@@ -98,13 +98,13 @@ In the table below, you see the listing of all 16 major categories, their averag
 #get a data frame with summary statistics for all major categories
 dat_stats_all <- recent_grads %>%
   group_by(Major_category) %>%
-  summarise(UnemploymentRate = sum(Unemployed)/sum(Employed+Unemployed),
+  summarise(UnemploymentRate = sum(Unemployed) / sum(Employed + Unemployed),
             AvgMedianSalary = mean(Median),
             Workforce = sum(Unemployed) + sum(Employed)) %>%
   mutate(Major_category = Major_category %>% as.factor() %>%
            fct_reorder(UnemploymentRate),
          STEM_Major = ifelse(!(Major_category %in% unique(women_stem$Major_category)),
-                             "No","Yes") %>% as.factor() %>%
+                             "No" , "Yes") %>% as.factor() %>%
            fct_relevel("Yes"))
 #dat_stats_all
 ```
@@ -118,21 +118,21 @@ df1 <- dat_stats_all %>%
  # mutate(recent_grads, Workforce = sum(Unemployed) + sum(Employed))%>%
   arrange(desc(AvgMedianSalary)) %>%
   select(c("Major_category","AvgMedianSalary","UnemploymentRate", "Workforce"))
-names(df1) <- c("Major Category", "Average Median Salary ($)","Unemployment Rate", "Workforce")
+names(df1) <- c("Major Category" , "Workforce" , "Unemployment Rate" , "Average Median Salary ($)")
 df1 %>% 
   kable() %>% 
   # add borders everywhere
   kable_styling(bootstrap_options = "bordered",
                 full_width = FALSE) %>%
   # Add borders left and right as well as wrap text
-  column_spec(c(1), border_left=T, width="7em") %>%
-  column_spec(c(4), border_right=T, width="8em") %>%
+  column_spec(c(1), border_left = T, width = "7em") %>%
+  column_spec(c(4), border_right = T, width = "8em") %>%
   # wrap text for 2nd column
-  column_spec(c(2), width="10em") %>%
+  column_spec(c(2), width = "10em") %>%
   # make column headers bold
-  row_spec(c(0), bold=T, font_size = 12, background="#808080") %>%
+  row_spec(c(0), bold = T, font_size = 12, background = "#808080") %>%
   # make all STEM categories bold
-  row_spec(which(df1$`Major Category` %in% unique(women_stem$Major_category)), bold=T)
+  row_spec(which(df1$`Major Category` %in% unique(women_stem$Major_category)), bold = T)
 ```
 
 
@@ -141,8 +141,8 @@ In this bar plot, you see that STEM major categories `Physical Sciences`, `Healt
 ```{r fig.height = 8, fig.width = 10}
 avg_unemploy_rate = mean(recent_grads$Unemployment_rate)
 dat_stats_all %>%
-  ggplot(aes(y=Major_category, 
-             x=UnemploymentRate, fill=STEM_Major)) +
+  ggplot(aes(y = Major_category, 
+             x = UnemploymentRate, fill = STEM_Major)) +
   geom_col() + 
   #wrap y-axis label text
   scale_y_discrete(labels = scales::label_wrap(20)) +
@@ -150,43 +150,43 @@ dat_stats_all %>%
     scale_x_continuous(
     breaks = c(0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11)) +
   # manually change fill colors
-  scale_fill_manual(values=c("#0066CC","#bebebe")) +
+  scale_fill_manual(values = c("#0066CC","#bebebe")) +
   # add red line representing average unemployment rate 
-  geom_vline(xintercept=avg_unemploy_rate,
-             color="red", linetype=2) + 
-  labs(x="Unemployment Rate", y="Major Category",
-       title="Unemployment Rate by Major Category",
-       fill="STEM") + 
+  geom_vline(xintercept = avg_unemploy_rate,
+             color = "red", linetype = 2) + 
+  labs( x = "Unemployment Rate", y = "Major Category",
+       title = "Unemployment Rate by Major Category",
+       fill = "STEM") + 
   # change title size
-  theme(plot.title=element_text(hjust=0.5,size=16)) + 
+  theme(plot.title = element_text(hjust = 0.5,size = 16)) + 
   # annotate vertical line
-  annotate("text",x=avg_unemploy_rate, 
-         y=1, label=paste("avg=", "","", "","", "","",round(avg_unemploy_rate,4)), color="red", size=4)
+  annotate("text",x = avg_unemploy_rate, 
+         y = 1, label = paste("avg=", "","", "","", "","",round(avg_unemploy_rate,4)), color = "red", size = 4)
   
 ```
 
 In this jitter plot, we visualize the summary statistics of individual majors within STEM major categories by their median salary with the bubble size correlated to the unemployment rate of each major. We again see that the physical sciences and health majors tend to have lower rates of unemployment but visually a fairly average median salary in comparison to other STEM major categories, with the exception of engineering majors which by in large have visually higher median salaries than all of the other STEM majors. As expected, we see that computer and mathematics majors on the whole have higher unemployment rates than the majors in the other STEM major categories.
 
-```{r, warning=F, fig.height = 8, fig.width = 8}
+```{r, warning = F, fig.height = 8, fig.width = 8}
 # Get the outliers
-outlier_pts <- full_data %>%filter(Median > 100000 |(Median > 60000 & Major_category == "Physical Sciences"))
+outlier_pts <- full_data %>% filter(Median > 100000 |(Median > 60000 & Major_category == "Physical Sciences"))
 
 full_data %>%
-  ggplot(aes(x=Major_category,y=Median,
-             color=Major_category,
-             size=Unemployment_rate)) +
-  geom_jitter(alpha=1/4) + # set transparency of points
+  ggplot(aes(x = Major_category, y = Median,
+             color = Major_category,
+             size = Unemployment_rate)) +
+  geom_jitter(alpha = 1/5) + # set transparency of points
   # label outliers
-  geom_text(data=outlier_pts, aes(label=str_wrap(Major,width=15), size=0.01), hjust=0.3, vjust=1.25, color="Black") + 
-  labs(x="Major Category", y="Median Salary ($ Thousands)",
-       title="Median Salary by STEM Major Category",
-       size="Unemployment Rate") +
-  theme(legend.position ="top",
-        plot.title=element_text(hjust=0.5)) + 
-  scale_y_continuous(breaks=c(40000,60000,80000,100000),
-                     labels=c("40","60","80","100")) +
-  guides(color=F, # remove legend for color
-         size=guide_legend( # change size legend
+  geom_text(data = outlier_pts, aes(label = str_wrap(Major,width = 15), size = 0.01), hjust = 0.3, vjust = 1.25, color = "Black") + 
+  labs(x = "Major Category", y = "Median Salary ($ Thousands)",
+       title = "Median Salary by STEM Major Category",
+       size = "Unemployment Rate") +
+  theme(legend.position = "top",
+        plot.title = element_text(hjust = 0.5)) + 
+  scale_y_continuous(breaks = c(40000, 60000, 80000, 100000),
+                     labels = c("40", "60", "80", "100")) +
+  guides(color = F, # remove legend for color
+         size = guide_legend( # change size legend
            override.aes = list(alpha = 1#,
                                #size = c(3,4.5,5.8,7)
                                )
@@ -194,7 +194,7 @@ full_data %>%
          ) +
   # Wrap text for major categories
   scale_x_discrete(labels = scales::label_wrap(15)) +
-  scale_size_binned(breaks = c(0.04, 0.05, 0.06, 0.07, 0.08, 0.09))
+  scale_size_binned(breaks = c(0.04, 0.06, 0.08, 0.10))
 
   
 ```
