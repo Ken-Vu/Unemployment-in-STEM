@@ -1,6 +1,6 @@
 # Unemployment in STEM
 
-Through exploratory data analysis and data visualization, our research hopes to observe whether obtaining a STEM (Science, Technology, Engineering and Mathematics) degree truly ensures that an individual will obtain a lucrative career, i.e. they are well compensated and not unemployed. From our previous research (see [Gender Wage Inequality in STEM](https://github.com/lgibson7/Gender-Wage-Inequality-in-STEM)), we know that know that not all STEM degrees secure the same level of median earnings so here we visualize levels of unemployment for the STEM major categories of  `Biology & Life Sciences` ,`Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences` compared to all other major categories.
+Through exploratory data analysis and data visualization, our research hopes to observe whether obtaining a STEM (Science, Technology, Engineering and Mathematics) degree truly ensures that an individual will obtain a lucrative career, i.e. they are well compensated and not unemployed. From our previous research (see [Gender Wage Inequality in STEM](https://github.com/lgibson7/Gender-Wage-Inequality-in-STEM)), we know that not all STEM degrees secure the same level of median earnings, so here we visualize levels of unemployment for the STEM major categories of `Biology & Life Sciences`, `Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences` compared to all other major categories.
 
 ![](table1_loaded.jpg)
 
