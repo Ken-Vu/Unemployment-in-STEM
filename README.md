@@ -1,11 +1,9 @@
 # Unemployment in STEM
 
+Through exploratory data analysis and data visualization, our research hopes to observe whether obtaining a STEM (Science, Technology, Engineering and Mathematics) degree truly ensures that an individual will obtain a lucrative career, i.e. they are well compensated and not unemployed. From our previous research (see [Gender Wage Inequality in STEM](https://github.com/lgibson7/Gender-Wage-Inequality-in-STEM)), we know that know that not all STEM degrees secure the same level of median earnings so here we visualize levels of unemployment for the STEM major categories of  `Biology & Life Sciences` ,`Computers and Mathematics`, `Engineering`, `Health`, and `Physical Sciences` compared to all other major categories.
 
+![](table1_loaded.jpg)
 
-# Tools Used
-
-* Libraries: `dplyr`, `ggplot2`, `readr`, `forcats`
-* Functions: `read_csv`, `inner_join`, `select`, `summarize`, `group_by`, `pivot_longer`, `mutate`, `ggplot`
 
 # Dataset Used
 
@@ -39,3 +37,8 @@ Header | Description
 `College_jobs` | Number with job requiring a college degree
 `Non_college_jobs` | Number with job not requiring a college degree
 `Low_wage_jobs` | Number in low-wage service jobs
+
+# Tools Used
+
+* Libraries: `dplyr`, `ggplot2`, `readr`, `forcats`
+* Functions: `read_csv`, `inner_join`, `select`, `summarize`, `group_by`, `pivot_longer`, `mutate`, `ggplot`
